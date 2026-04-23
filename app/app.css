@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+/* Fee Optimizer Studio — visual identity tokens.
+   Mirrors app/styles/tokens.ts. Single source of color truth:
+   deep slate canvas, single amber accent, mono numerics. */
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  --color-bg: #0E1116;
+  --color-surface: #161B22;
+  --color-border: #262C36;
+  --color-border-strong: #3A434F;
+
+  --color-ink: #E6EDF3;
+  --color-ink-muted: #8B949E;
+  --color-ink-subtle: #6E7681;
+
+  --color-accent: #D9A441;
+  --color-accent-hover: #E5B055;
+  --color-accent-soft: #332710;
+  --color-accent-ink: #0E1116;
+
+  --color-success: #2DBFB0;
+  --color-success-soft: #0F2421;
+  --color-warning: #D9A441;
+  --color-warning-soft: #332710;
+  --color-danger: #E5337E;
+  --color-danger-soft: #2A0F1B;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+}
+
+html, body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+}
+
+.font-display {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.tabular {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
