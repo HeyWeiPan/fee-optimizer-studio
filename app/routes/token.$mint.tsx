@@ -13,6 +13,8 @@ import {
   shortAddr,
 } from "../components/ui";
 import { FeePieChart } from "../components/FeePieChart";
+import { PeersSection } from "../components/PeersSection";
+import type { PeersData } from "../lib/peers";
 
 /**
  * F2 — Per-token inspector page.
@@ -31,8 +33,8 @@ export function meta({ params }: Route.MetaArgs) {
 export const loader = tokenApiLoader;
 
 export default function TokenPage({ loaderData }: Route.ComponentProps) {
-  const data = loaderData as TokenView;
-  const { feeConfig, totals, claimEvents, pool, mint } = data;
+  const data = loaderData as TokenView & { peers?: PeersData };
+  const { feeConfig, totals, claimEvents, pool, mint, peers } = data;
 
   const lastEvent = claimEvents[0];
   const claimerLabels = feeConfig.claimers.map((c) => ({
@@ -170,6 +172,8 @@ export default function TokenPage({ loaderData }: Route.ComponentProps) {
             />
           )}
         </Card>
+
+        {peers ? <PeersSection peers={peers} /> : null}
 
         <Card>
           <h3 className="font-display text-lg mb-4">Pool keys</h3>
