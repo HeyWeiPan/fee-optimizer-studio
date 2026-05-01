@@ -12,13 +12,14 @@ import {
   fmtSolNum,
   shortAddr,
 } from "../components/ui";
+import { ApplySplitFlow } from "../components/ApplySplitFlow";
 
 /**
  * F3 — Split simulator.
  *
- * Reuses the F2 loader (full TokenView). All editing is client-side; nothing
- * is persisted. The "apply" CTA will wire to the on-chain admin update once
- * wallet signing is live; until then this surface is a pure preview.
+ * Reuses the F2 loader (full TokenView). All editing is client-side; the
+ * "apply" CTA hands off to the F5 flow which signs and submits an admin
+ * update-config tx via Phantom.
  *
  * Projection model (closed-form, mass-conserving):
  *   projected_i = gross30d * newBps_i / sum(newBps where > 0)
@@ -104,6 +105,27 @@ export default function SimulatePage({ loaderData }: Route.ComponentProps) {
 
   const reset = () => setNewBps(initialNew);
 
+  const adminWallet = useMemo(
+    () => feeConfig.claimers.find((c) => c.isAdmin)?.wallet ?? "",
+    [feeConfig.claimers],
+  );
+
+  /**
+   * Bags update-config takes wallet/basisPoints arrays in parallel order.
+   * Send only fee-active rows in the new split — display-only (0-BPS) entries
+   * are not part of the on-chain fee config.
+   */
+  const applyClaimers = useMemo(
+    () =>
+      feeConfig.claimers
+        .filter((c) => (newBps[c.wallet] ?? 0) > 0)
+        .map((c) => ({
+          wallet: c.wallet,
+          basisPoints: newBps[c.wallet] ?? 0,
+        })),
+    [feeConfig.claimers, newBps],
+  );
+
   return (
     <PageShell>
       <div className="space-y-8">
@@ -169,7 +191,7 @@ export default function SimulatePage({ loaderData }: Route.ComponentProps) {
         </div>
 
         <Card>
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
             <h3 className="font-display text-lg">Editable split</h3>
             <div className="flex gap-2">
               <button
@@ -183,23 +205,6 @@ export default function SimulatePage({ loaderData }: Route.ComponentProps) {
                 }}
               >
                 Reset
-              </button>
-              <button
-                disabled={!isValid || !isDirty}
-                title={
-                  !isValid
-                    ? "BPS must sum to 10000"
-                    : !isDirty
-                    ? "No changes to apply"
-                    : "Build update-config tx (coming soon)"
-                }
-                className="h-9 px-4 rounded-md text-xs font-medium uppercase tracking-wide disabled:opacity-40"
-                style={{
-                  background: palette.accent,
-                  color: palette.accentInk,
-                }}
-              >
-                Apply split
               </button>
             </div>
           </div>
@@ -266,10 +271,29 @@ export default function SimulatePage({ loaderData }: Route.ComponentProps) {
           </div>
         </Card>
 
-        <p className="text-xs text-ink-subtle">
-          <em>Apply split</em> will wire the on-chain admin update once wallet
-          signing is live. Until then this is a pure preview.
-        </p>
+        <Card>
+          <h3 className="font-display text-lg mb-3">Apply on-chain</h3>
+          {adminWallet ? (
+            <ApplySplitFlow
+              mint={mint}
+              adminWallet={adminWallet}
+              claimers={applyClaimers}
+              isValid={isValid}
+              isDirty={isDirty}
+            />
+          ) : (
+            <p className="text-xs text-ink-subtle">
+              No fee-share admin found for this mint — Apply is unavailable.
+            </p>
+          )}
+          <p className="text-xs text-ink-subtle mt-3 leading-relaxed max-w-2xl">
+            Apply will build an admin <em>update-config</em> transaction via
+            Bags, hand it to your wallet for signature, and submit the signed
+            tx through Bags' relayer. The 30-day projection above stays read-only
+            — the on-chain effect starts on the next claim event after the tx
+            confirms.
+          </p>
+        </Card>
       </div>
     </PageShell>
   );
