@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { PublicKey } from "@solana/web3.js";
 import { palette } from "../styles/tokens";
 import { Badge } from "./ui";
 import {
@@ -11,6 +12,21 @@ import {
 } from "../lib/phantom";
 import type { BuildSplitResponse } from "../routes/api.apply-split.build";
 import type { SubmitSplitResponse } from "../routes/api.apply-split.submit";
+
+/**
+ * Admin-mismatch check. PublicKey.equals() compares the underlying 32-byte
+ * representation, so it tolerates the (rare) case where two base58 strings
+ * round-trip to the same key. Constructing a PublicKey also throws on
+ * invalid input — better to fail loud than silently mis-render.
+ */
+function pubkeysEqual(a: string | null, b: string | null): boolean {
+  if (!a || !b) return false;
+  try {
+    return new PublicKey(a).equals(new PublicKey(b));
+  } catch {
+    return false;
+  }
+}
 
 /**
  * F5 — Apply-split flow component.
@@ -43,7 +59,17 @@ type FlowState =
   | { phase: "signing"; total: number; current: number }
   | { phase: "submitting"; total: number; current: number }
   | { phase: "done"; submitted: SubmittedTx[] }
-  | { phase: "error"; stage: "build" | "sign" | "submit"; message: string };
+  | {
+      phase: "error";
+      stage: "build" | "sign" | "submit";
+      message: string;
+      /**
+       * Signatures already landed before the error. In multi-tx scenarios
+       * partial success matters — the user must see what's already on-chain
+       * so they don't double-submit or panic-recover.
+       */
+      submitted: SubmittedTx[];
+    };
 
 export function ApplySplitFlow({
   mint,
@@ -81,6 +107,7 @@ export function ApplySplitFlow({
         phase: "error",
         stage: "build",
         message: e instanceof Error ? e.message : String(e),
+        submitted: [],
       });
     }
   }, []);
@@ -116,6 +143,7 @@ export function ApplySplitFlow({
         phase: "error",
         stage: "build",
         message: e instanceof Error ? e.message : String(e),
+        submitted: [],
       });
       return;
     }
@@ -124,7 +152,9 @@ export function ApplySplitFlow({
     const submitted: SubmittedTx[] = [];
 
     // Sign-then-submit per tx. Doing it serially so the user sees one
-    // wallet prompt at a time rather than n stacked.
+    // wallet prompt at a time rather than n stacked. On a mid-tx failure
+    // the running `submitted` list is forwarded into the error state so
+    // partial successes never disappear from the UI.
     for (let i = 0; i < total; i++) {
       const tx = build.transactions[i];
 
@@ -137,6 +167,7 @@ export function ApplySplitFlow({
           phase: "error",
           stage: "sign",
           message: e instanceof Error ? e.message : String(e),
+          submitted: [...submitted],
         });
         return;
       }
@@ -159,6 +190,7 @@ export function ApplySplitFlow({
           phase: "error",
           stage: "submit",
           message: e instanceof Error ? e.message : String(e),
+          submitted: [...submitted],
         });
         return;
       }
@@ -167,7 +199,7 @@ export function ApplySplitFlow({
     setState({ phase: "done", submitted });
   }, [connected, mint, claimers]);
 
-  const isAdminMatch = connected === adminWallet;
+  const isAdminMatch = pubkeysEqual(connected, adminWallet);
   const inProgress =
     state.phase === "building" ||
     state.phase === "signing" ||
@@ -269,15 +301,43 @@ export function ApplySplitFlow({
 
       {state.phase === "error" && (
         <div
-          className="rounded-md p-3 text-xs"
+          className="rounded-md p-3 text-xs space-y-2"
           style={{
             background: palette.bg,
             border: `1px solid ${palette.danger}`,
-            color: palette.danger,
           }}
         >
-          <strong className="uppercase tracking-wider mr-2">{state.stage} error:</strong>
-          {state.message}
+          <div style={{ color: palette.danger }}>
+            <strong className="uppercase tracking-wider mr-2">
+              {state.stage} error:
+            </strong>
+            {state.message}
+          </div>
+          {state.submitted.length > 0 && (
+            <div className="pt-2" style={{ borderTop: `1px solid ${palette.border}` }}>
+              <div className="flex items-center gap-2 mb-1">
+                <Badge tone="success">partial</Badge>
+                <span className="text-ink-muted">
+                  {state.submitted.length} on-chain signature
+                  {state.submitted.length === 1 ? "" : "s"} landed before the error
+                </span>
+              </div>
+              <ul className="space-y-1 tabular">
+                {state.submitted.map((s) => (
+                  <li key={s.signature}>
+                    <a
+                      href={`https://solscan.io/tx/${s.signature}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ color: palette.accent }}
+                    >
+                      {s.signature.slice(0, 12)}…{s.signature.slice(-8)} ↗
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       )}
 

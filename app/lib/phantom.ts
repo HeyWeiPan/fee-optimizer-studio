@@ -1,10 +1,9 @@
 /**
  * Minimal Phantom provider helpers (browser-only).
  *
- * The first cut keeps the wallet integration narrow: Phantom is the dominant
- * Solana wallet on launch tools and shipping a single-wallet path unblocks
- * the round-trip without committing to the heavier `@solana/wallet-adapter-*`
- * graph. Multi-wallet support is a follow-up.
+ * Single-wallet integration (Phantom only). Avoids pulling in
+ * `@solana/wallet-adapter-*` for the first cut; multi-wallet support can be
+ * layered on later.
  *
  * All functions throw a descriptive Error on the unhappy path; callers
  * surface them in the flow state machine.
