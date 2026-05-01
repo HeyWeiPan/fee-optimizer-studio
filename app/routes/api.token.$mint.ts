@@ -1,6 +1,8 @@
 import type { Route } from "./+types/api.token.$mint";
 import { bags, type ClaimEvent, type CreatorInfo, type ClaimerCumulative } from "../lib/bags-client.server";
 import { lamportsToSol } from "../lib/format";
+import { resolvePeers } from "../lib/peers-snapshot.server";
+import type { PeersData } from "../lib/peers";
 
 /**
  * F2 — Per-token inspector data.
@@ -58,6 +60,7 @@ export type TokenView = {
     dammV2PoolKey: string | null;
     bagsConfigType: string | null;
   };
+  peers: PeersData;
   rateLimit: { remaining: number; resetAt: number };
 };
 
@@ -116,12 +119,23 @@ export async function loader({ params }: Route.LoaderArgs): Promise<TokenView> {
 
   const thirty = computeThirtyDayWindow(eventsThirty, fromUnix, nowSec);
 
+  const lifetimeFeesSol = lamportsToSol(lifetime);
+  const feeActiveBps = feeActive
+    .map((c) => c.basisPoints)
+    .sort((a, b) => b - a);
+  const peers = resolvePeers({
+    currentMint: mint,
+    currentClaimerCount: feeActive.length,
+    currentAccrualSol: lifetimeFeesSol,
+    currentBpsVector: feeActiveBps,
+  });
+
   return {
     mint,
     feeConfig: { claimers, totalBps, integrityWarning },
     totals: {
       lifetimeFeesLamports: lifetime.toString(),
-      lifetimeFeesSol: lamportsToSol(lifetime),
+      lifetimeFeesSol,
       claimEventsCount: events.length,
     },
     claimEvents: events,
@@ -132,6 +146,7 @@ export async function loader({ params }: Route.LoaderArgs): Promise<TokenView> {
       dammV2PoolKey: pool?.dammV2PoolKey ?? null,
       bagsConfigType: pool?.bagsConfigType ?? null,
     },
+    peers,
     rateLimit: bags.rateLimit(),
   };
 }

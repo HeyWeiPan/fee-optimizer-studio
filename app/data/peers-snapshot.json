@@ -1,0 +1,199 @@
+{
+  "generatedAt": "2026-05-01T02:51:51.022Z",
+  "source": "bags-public-api-v2/launchFeed+creatorInfo+lifetimeFees",
+  "sampleCount": 19,
+  "samples": [
+    {
+      "mint": "Hdtr3CRAVoWEQbq1gb3dqDaWhiv2TPS7GF6jS2CbBAGS",
+      "symbol": "PIBBLE",
+      "status": "PRE_GRAD",
+      "claimerCount": 1,
+      "accrualSol": 0.015681603,
+      "bpsVector": [
+        10000
+      ]
+    },
+    {
+      "mint": "8YeMjbft2KPPH3HgNE7dpu4MQWJEsPmSNtbCyChkBAGS",
+      "symbol": "DROOL",
+      "status": "PRE_GRAD",
+      "claimerCount": 1,
+      "accrualSol": 0.204050011,
+      "bpsVector": [
+        10000
+      ]
+    },
+    {
+      "mint": "5VrSDEEV4HVYEWXsxXth6gGpH5dp2n6F7FvTj8GjBAGS",
+      "symbol": "CNFT",
+      "status": "PRE_GRAD",
+      "claimerCount": 1,
+      "accrualSol": 0.02195424,
+      "bpsVector": [
+        10000
+      ]
+    },
+    {
+      "mint": "13bn2jfGbC7wSxedJUzqvdJqp9vJraJEcmGykiuQBAGS",
+      "symbol": "TREES",
+      "status": "PRE_GRAD",
+      "claimerCount": 1,
+      "accrualSol": 0.148215935,
+      "bpsVector": [
+        10000
+      ]
+    },
+    {
+      "mint": "79uPFN2yaUX3c7hTd2YA2X245BgVfFpe9GA8uwNwBAGS",
+      "symbol": "NORDOOD",
+      "status": "PRE_GRAD",
+      "claimerCount": 1,
+      "accrualSol": 0.781993753,
+      "bpsVector": [
+        10000
+      ]
+    },
+    {
+      "mint": "7ERaiqwV2YvYRuBkGfSk8n6NJTGckbYXVuyK8bmCBAGS",
+      "symbol": "MNEMOS",
+      "status": "PRE_GRAD",
+      "claimerCount": 1,
+      "accrualSol": 8.462887836,
+      "bpsVector": [
+        10000
+      ]
+    },
+    {
+      "mint": "J21UXhVXRR9qwqqoEGeRGgBDegMMeS2JZFwfZ2jwBAGS",
+      "symbol": "GOBLINAPP",
+      "status": "PRE_GRAD",
+      "claimerCount": 1,
+      "accrualSol": 0.144090957,
+      "bpsVector": [
+        10000
+      ]
+    },
+    {
+      "mint": "AtnTnDNtT2z1nCuXv4MpP6M1voqazdwWrPpfjGmRBAGS",
+      "symbol": "GLUEAI",
+      "status": "PRE_GRAD",
+      "claimerCount": 1,
+      "accrualSol": 0.011444123,
+      "bpsVector": [
+        10000
+      ]
+    },
+    {
+      "mint": "6YhRdjKce9gAMW98EGTP4gJ8sNMx9oQ6eY1NgYP5BAGS",
+      "symbol": "FORCE",
+      "status": "PRE_GRAD",
+      "claimerCount": 1,
+      "accrualSol": 0.018311717,
+      "bpsVector": [
+        10000
+      ]
+    },
+    {
+      "mint": "62BKA4tqJHsgcva79oGx3RLr8idMrGbpoW5vpbuEBAGS",
+      "symbol": "SERI",
+      "status": "PRE_GRAD",
+      "claimerCount": 1,
+      "accrualSol": 0.022632332,
+      "bpsVector": [
+        10000
+      ]
+    },
+    {
+      "mint": "8CFqkQ1B5SNvA5LyPNQ8ZHBCs8tC7kNFipFbaCcYBAGS",
+      "symbol": "SOLDI",
+      "status": "PRE_GRAD",
+      "claimerCount": 1,
+      "accrualSol": 0.168932049,
+      "bpsVector": [
+        10000
+      ]
+    },
+    {
+      "mint": "ME91kHAdoRknAT8mqJY5VhtXCtxhU67qi8CKCLxBAGS",
+      "symbol": "UXP",
+      "status": "PRE_GRAD",
+      "claimerCount": 1,
+      "accrualSol": 0.255840833,
+      "bpsVector": [
+        10000
+      ]
+    },
+    {
+      "mint": "2sGBoxh7PtBHbux2hKaBHqPFW3aJeqeNaQ2SFQ66BAGS",
+      "symbol": "ABHQ",
+      "status": "PRE_GRAD",
+      "claimerCount": 1,
+      "accrualSol": 0.301420636,
+      "bpsVector": [
+        10000
+      ]
+    },
+    {
+      "mint": "B3eTuz7hoCM66w1HGByEVDdP3ExqcceYj1A2ZCCpBAGS",
+      "symbol": "CURRY",
+      "status": "PRE_GRAD",
+      "claimerCount": 1,
+      "accrualSol": 0.696468254,
+      "bpsVector": [
+        10000
+      ]
+    },
+    {
+      "mint": "GtJfJn1FhJsoTg4ke1k4iFoinzWD4geEbzM8HKe9BAGS",
+      "symbol": "HATL",
+      "status": "PRE_GRAD",
+      "claimerCount": 1,
+      "accrualSol": 0.341345807,
+      "bpsVector": [
+        10000
+      ]
+    },
+    {
+      "mint": "EHV9dYqRBdw6Fc2ZeFEBtb56vXPY5AyxRSTgLZS1BAGS",
+      "symbol": "AURA",
+      "status": "PRE_GRAD",
+      "claimerCount": 1,
+      "accrualSol": 0.022791745,
+      "bpsVector": [
+        10000
+      ]
+    },
+    {
+      "mint": "93kfRtiaqCkzB42g311K2AyCpBuvQmteBw7Na7HgBAGS",
+      "symbol": "STEPPAS",
+      "status": "PRE_GRAD",
+      "claimerCount": 1,
+      "accrualSol": 0.3981452,
+      "bpsVector": [
+        10000
+      ]
+    },
+    {
+      "mint": "97AdS7csoNTtdtoTLcQqHSLtBSPuK6uQRFm5rjG7BAGS",
+      "symbol": "AR",
+      "status": "PRE_GRAD",
+      "claimerCount": 3,
+      "accrualSol": 0.249250871,
+      "bpsVector": [
+        6500,
+        2500,
+        1000
+      ]
+    },
+    {
+      "mint": "2RADRifDDspis6Ke1BH5QfzNRtPJwbU98dcPoFpiBAGS",
+      "symbol": "AHAH",
+      "status": "PRE_GRAD",
+      "claimerCount": 1,
+      "accrualSol": 1.952884519,
+      "bpsVector": [
+        10000
+      ]
+    }
+  ]
+}
