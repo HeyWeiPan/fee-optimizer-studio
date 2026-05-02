@@ -134,8 +134,7 @@ export function ApplySplitFlow({
         }),
       });
       if (!res.ok) {
-        const txt = await res.text();
-        throw new Error(`build failed (${res.status}): ${txt.slice(0, 240)}`);
+        throw new Error(await readErrorMessage(res, "build"));
       }
       build = (await res.json()) as BuildSplitResponse;
     } catch (e) {
@@ -180,8 +179,7 @@ export function ApplySplitFlow({
           body: JSON.stringify({ transaction: signedB58 }),
         });
         if (!res.ok) {
-          const txt = await res.text();
-          throw new Error(`submit failed (${res.status}): ${txt.slice(0, 240)}`);
+          throw new Error(await readErrorMessage(res, "submit"));
         }
         const out = (await res.json()) as SubmitSplitResponse;
         submitted.push({ index: i, signature: out.signature });
@@ -385,4 +383,22 @@ function phaseLabel(s: FlowState): string {
 
 function shortWallet(w: string): string {
   return `${w.slice(0, 4)}…${w.slice(-4)}`;
+}
+
+/**
+ * Resource routes return `{ error, detail }` JSON on failure (see
+ * api.apply-split.{build,submit}.ts). Prefer the friendly `error` string;
+ * fall back to the raw body if parsing fails so we never lose the signal.
+ */
+async function readErrorMessage(res: Response, stage: "build" | "submit"): Promise<string> {
+  const txt = await res.text();
+  try {
+    const parsed = JSON.parse(txt) as { error?: unknown };
+    if (typeof parsed.error === "string" && parsed.error.length > 0) {
+      return parsed.error;
+    }
+  } catch {
+    /* not JSON — fall through */
+  }
+  return `${stage} failed (${res.status}): ${txt.slice(0, 240)}`;
 }
